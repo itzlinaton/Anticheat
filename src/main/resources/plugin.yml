@@ -8,3 +8,6 @@ commands:
   ping:
     description: View a player's ping
     usage: /ping <player>
+  reload:
+    description: Reload the configuration files
+    usage: /reload

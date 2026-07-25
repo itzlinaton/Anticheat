@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class PlayerData {
+
     public PlayerData(Player player) {
         this.player = player;
         this.lastX = player.getLocation().getX();
@@ -15,66 +16,124 @@ public class PlayerData {
         this.lastZ = player.getLocation().getZ();
     }
 
+
+    /* =========================================
+       DATA MANAGERS
+     ========================================= */
+
     // General
     public Player player;
     public Object boundingBox;
     public double lastX, lastY, lastZ;
     public boolean onGround, clientGround, lastClientGround;
+
     public double deltaXZ, deltaY;
 
     public boolean inLiquid, onStairSlab, onIce, onClimbable, onSlime, underBlock;
     public int liquidTicks, iceTicks, slimeTicks, underBlockTicks;
+
     public int airTicks, groundTicks;
     public int speedPotionLevel;
 
+
+    /* =========================================
+       AIM CHECKS
+     ========================================= */
+
     // Aim
     public float lastYaw = 0, lastPitch = 0;
+
     public float deltaYaw = 0, deltaPitch = 0, lastDeltaYaw = 0, lastDeltaPitch = 0;
+
     public float yawGcd = 0, pitchGcd = 0, lastYawGcd = 0, lastPitchGcd = 0;
+
     public LinkedList<Float> yawGcdList = new EvictingList<>(45);
     public LinkedList<Float> pitchGcdList = new EvictingList<>(45);
+
     // 0.0603
+
+
+    /* =========================================
+       VELOCITY DATA
+     ========================================= */
 
     // Velocity
     public int velXTicks, velYTicks, velZTicks;
 
+
+    /* =========================================
+       COMBAT CHECKS
+     ========================================= */
+
     // Killaura A
     public long lastFlying;
+
+
+    // Reach / Combat buffers
+    public int auraABuffer = 0, auraBBuffer = 0;
+    public int reachABuffer = 0;
+    public double reachBBuffer = 0f;
+
+    /* =========================================
+       MOVEMENT CHECKS
+     ========================================= */
 
     // NoFall A
     public boolean lastServerGround = true;
     public boolean nearGround;
 
+
+    // Speed
+    public int speedABuffer = 0;
+
+
+    /* =========================================
+       PACKET CHECKS
+     ========================================= */
+
     // Timer
     public long lastMs = System.currentTimeMillis();
     public int threshold = 250;
 
+
     // PingSpoof
     public final Map<Long, Long> keepAliveSendTimes = new HashMap<>(); // id -> send time
+
     public long lastKeepAliveRtt = 0;
     public int flyingSinceKeepAlive = 0;
     public int pingSpoofBuffer = 0;
 
+
     // Blink / FakeLag
     public long lastFlyingMs = System.currentTimeMillis();
+
     public long blinkGap = 0;              // length of the silence preceding a release
     public long blinkReleaseStart = 0;
+
     public int blinkReleaseCount = 0;
     public boolean watchingRelease = false;
+
     public int blinkBuffer = 0;
 
+    // Place Buffers
+    public double placeBuffer = 0f;
+
+    /* =========================================
+       CHECK BUFFERS
+     ========================================= */
+
     // Buffers
-    public int auraABuffer = 0, auraBBuffer = 0;
     public int nofallABuffer = 0;
-    public int speedABuffer = 0;
+
     public int aimABuffer = 0;
+
     public long timerBalance = 0;
-    public int reachABuffer = 0;
-    public double reachBBuffer = 0f;
+
 
     public boolean isVelocityTaken() {
         return velXTicks > 0 || velYTicks > 0 || velZTicks > 0;
     }
+
 
     /**
      * Decrements velXTicks, velYTicks, and velZTicks by 1 if they are positive.

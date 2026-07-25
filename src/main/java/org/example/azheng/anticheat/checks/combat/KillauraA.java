@@ -30,19 +30,20 @@ public class KillauraA extends Check {
         PlayerData data = Anticheat.instance.dataManager.getPlayerData(p);
         if (!desiredTypes.contains(e.getPacketType())) return;
 
-        if (e.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
-            if (System.currentTimeMillis() - data.lastFlying < 5) {
-                data.auraABuffer++;
-                if (data.auraABuffer > 10) {
-                    flag(p, "flying packet sent too late");
-                }
-            } else {
-                data.auraABuffer = 0;
-            }
-        } else {
+        if (e.getPacketType() != PacketType.Play.Client.INTERACT_ENTITY) {
             //p.sendMessage(String.valueOf(System.currentTimeMillis() - data.lastFlying));
             data.lastFlying = System.currentTimeMillis();
+            return;
         }
 
+        if (System.currentTimeMillis() - data.lastFlying >= 5) {
+            data.auraABuffer = 0;
+            return;
+        }
+
+        data.auraABuffer++;
+        if (data.auraABuffer > 10) {
+            flag(p, "flying packet sent too late");
+        }
     }
 }

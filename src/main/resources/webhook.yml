@@ -1,0 +1,19 @@
+# ====================================================
+# Anti-Cheat Webhooks file
+# ====================================================
+# This is the basic webhooks file for the
+# Anti-cheat Series, created by: azheng106 on GitHub
+#
+# Resources:
+# - Repository: https://github.com/azheng106/Anticheat
+# - YouTube Series: https://youtu.be/2g_8jg9vw3Q?si=TJP2jj_I02NbHvM5
+# ====================================================
+
+webhook:
+  enabled: false
+  url: "YOUR_DISCORD_WEBHOOK_URL"
+  title: "Anti-Cheat Violation"
+  description: "**%player%** has failed **%check%**, read below for more Information: \n```%verbose%```"
+  color: "#8B0000"
+  thumbnail: "https://render.crafty.gg/2d/head/%player%"
+  footer: "Anti-Cheat"

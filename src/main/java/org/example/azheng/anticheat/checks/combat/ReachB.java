@@ -179,21 +179,24 @@ public class ReachB extends Check {
 
         // ── Accrue / drain the weighted buffer ─────────────────────────────
         double over = best - MAX_REACH;
-        if (over > 0) {
-            // Clamp into [MIN_PER_HIT, MAX_PER_HIT]: a slim-but-real reach still
-            // makes meaningful progress, a blatant one can't instantly flag.
-            data.reachBBuffer += Math.min(MAX_PER_HIT, Math.max(MIN_PER_HIT, over));
-
-            if (data.reachBBuffer >= FLAG_THRESHOLD) {
-                flag(attacker, String.format(
-                        "dist=%.3f max=%.2f rewind=%d-%d ping=%dms buf=%.2f",
-                        best, MAX_REACH, lo, hi, pingMillis(attacker), data.reachBBuffer));
-                // Bleed off so we don't spam every subsequent packet.
-                data.reachBBuffer = FLAG_THRESHOLD / 2.0;
-            }
-        } else {
+        if (over <= 0) {
             data.reachBBuffer = Math.max(0.0, data.reachBBuffer - BUFFER_DECAY);
+            return;
         }
+
+        // Clamp into [MIN_PER_HIT, MAX_PER_HIT]: a slim-but-real reach still
+        // makes meaningful progress, a blatant one can't instantly flag.
+        data.reachBBuffer += Math.min(MAX_PER_HIT, Math.max(MIN_PER_HIT, over));
+
+        if (data.reachBBuffer < FLAG_THRESHOLD) {
+            return;
+        }
+
+        flag(attacker, String.format(
+                "dist=%.3f max=%.2f rewind=%d-%d ping=%dms buf=%.2f",
+                best, MAX_REACH, lo, hi, pingMillis(attacker), data.reachBBuffer));
+        // Bleed off so we don't spam every subsequent packet.
+        data.reachBBuffer = FLAG_THRESHOLD / 2.0;
     }
 
     /** Attacker ping in ms, or 0 if reflection fails (then only the interpolation

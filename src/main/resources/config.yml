@@ -1,0 +1,13 @@
+# ====================================================
+# Anti-Cheat Configuration file
+# ====================================================
+# This is the basic configuration file for the
+# Anti-cheat Series, created by: azheng106 on GitHub
+#
+# Resources:
+# - Repository: https://github.com/azheng106/Anticheat
+# - YouTube Series: https://youtu.be/2g_8jg9vw3Q?si=TJP2jj_I02NbHvM5
+# ====================================================
+
+prefix: "&9AC &7>"
+print-console: true # Whether to print flags to console or not

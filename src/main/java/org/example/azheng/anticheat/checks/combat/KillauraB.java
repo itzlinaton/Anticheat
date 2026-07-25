@@ -31,11 +31,11 @@ public class KillauraB extends Check {
     private BlockData getData(Player p) { return blockDataMap.computeIfAbsent(p.getUniqueId(), id -> new BlockData()); }
 
     /*
-    PLAYER_BLOCK_PLACEMENT packet is sent when player blocks with a sword.
-    The packet will be sent with a dummy location (y = 4095) and BlockFace OTHER.
-    PLAYER_DIGGING packet is sent when player unblocks with a sword, with action type RELEASE_USE_ITEM
-    INTERACT_ENTITY packet is sent when player attacks an entity
-     */
+    * PLAYER_BLOCK_PLACEMENT packet is sent when player blocks with a sword.
+    * The packet will be sent with a dummy location (y = 4095) and BlockFace OTHER.
+    * PLAYER_DIGGING packet is sent when player unblocks with a sword, with action type RELEASE_USE_ITEM
+    * INTERACT_ENTITY packet is sent when player attacks an entity
+    */
     @Override
     public void onPacketReceive(PacketReceiveEvent e) {
         Player p = e.getPlayer();
@@ -53,7 +53,10 @@ public class KillauraB extends Check {
                 // Blocking sword
                 data.isBlocking = true;
             }
-        } else if (type == PacketType.Play.Client.PLAYER_DIGGING) {
+            return;
+        }
+
+        if (type == PacketType.Play.Client.PLAYER_DIGGING) {
             WrapperPlayClientPlayerDigging packet = new WrapperPlayClientPlayerDigging(e);
             DiggingAction action = packet.getAction();
             if (isHoldingSword(p) &&
@@ -62,30 +65,40 @@ public class KillauraB extends Check {
                 data.isBlocking = false;
                 data.lastUnblock = System.currentTimeMillis();
             }
-        } else if (type == PacketType.Play.Client.HELD_ITEM_CHANGE) {
+            return;
+        }
+
+        if (type == PacketType.Play.Client.HELD_ITEM_CHANGE) {
             // Switch item slot
             data.isBlocking = false;
             data.lastUnblock = System.currentTimeMillis();
-        } else if (type == PacketType.Play.Client.INTERACT_ENTITY) {
+            return;
+        }
+
+        if (type == PacketType.Play.Client.INTERACT_ENTITY) {
             WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(e);
 
-            if (packet.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
-                long timeSinceLastUnblock = System.currentTimeMillis() - data.lastUnblock;
+            if (packet.getAction() != WrapperPlayClientInteractEntity.InteractAction.ATTACK) return;
 
-                if (data.isBlocking) {
-                    playerData.auraBBuffer++;
-                    if (playerData.auraBBuffer > 3) {
-                        flag(p, "attacking while blocking");
-                    }
-                } else if (timeSinceLastUnblock < 2) {
-                    playerData.auraBBuffer++;
-                    if (playerData.auraBBuffer > 2) {
-                        flag(p, "unblocked <2ms before attacking");
-                    }
-                } else {
-                    playerData.auraBBuffer = 0;
+            long timeSinceLastUnblock = System.currentTimeMillis() - data.lastUnblock;
+
+            if (data.isBlocking) {
+                playerData.auraBBuffer++;
+                if (playerData.auraBBuffer > 3) {
+                    flag(p, "attacking while blocking");
                 }
+                return;
             }
+
+            if (timeSinceLastUnblock < 2) {
+                playerData.auraBBuffer++;
+                if (playerData.auraBBuffer > 2) {
+                    flag(p, "unblocked <2ms before attacking");
+                }
+                return;
+            }
+
+            playerData.auraBBuffer = 0;
         }
     }
 

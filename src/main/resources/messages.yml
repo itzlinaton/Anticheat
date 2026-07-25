@@ -1,0 +1,18 @@
+# ====================================================
+# Anti-Cheat Messages file
+# ====================================================
+# This is the basic messages file for the
+# Anti-cheat Series, created by: azheng106 on GitHub
+#
+# Resources:
+# - Repository: https://github.com/azheng106/Anticheat
+# - YouTube Series: https://youtu.be/2g_8jg9vw3Q?si=TJP2jj_I02NbHvM5
+# ====================================================
+
+messages:
+  flag-message: "%prefix% &b%player% &7has failed &c%check% &d(%verbose%)"
+  ping-message: "&b%player%'s &7ping: &a%ping%"
+  reload-message: "&aSuccessfully reloaded configuration files!"
+  usage-message: "&c/%usage%"
+  unexpected-error-message: "&cUnexpected error occurred: %error%"
+  player-not-found-message: "&cPlayer was not found."
