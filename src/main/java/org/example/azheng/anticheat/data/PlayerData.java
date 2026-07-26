@@ -115,9 +115,6 @@ public class PlayerData {
 
     public int blinkBuffer = 0;
 
-    // Place Buffers
-    public double placeBuffer = 0f;
-
     /* =========================================
        CHECK BUFFERS
      ========================================= */
